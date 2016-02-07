@@ -8,12 +8,11 @@ app.get('/', function(req, res) {
 
 
 io.on('connection', function(socket){
-  io.emit('chat message', '*** A user connected ***');
+  io.emit('userConnection');
 
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-    console.log('message: ' + msg);
-  });
+  socket.on('chatMessage', function(msg){
+    io.emit('chatMessage', {from: msg.nickname, message: msg.message});
+  })
 
 });
 

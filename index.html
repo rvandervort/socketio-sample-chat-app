@@ -22,15 +22,20 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       var socket = io();
+      var myNickname = window.prompt("What's your nickname?");
 
       $('form').submit(function(){
-        socket.emit('chat message', $('#m').val());
+        socket.emit('chatMessage', {nickname: myNickname, message: $('#m').val()});
         $('#m').val('');
         return false;
-      }); 
+      });
 
-      socket.on('chat message', function(msg){
-        $('#messages').append($('<li>').text(msg));
+      socket.on('chatMessage', function(message){
+        $('#messages').append($('<li>').text(message.from + ": " + message.message));
+      });
+
+      socket.on('userConnection', function() {
+        $('#messages').append($('<li>').text('*** A user connected ***'));
       });
     </script>
   </body>
