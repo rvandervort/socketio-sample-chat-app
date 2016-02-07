@@ -19,7 +19,7 @@
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.js"></script>
     <script>
       var socket = io();
       var myNickname = window.prompt("What's your nickname?");
@@ -30,13 +30,21 @@
         return false;
       });
 
-      socket.on('chatMessage', function(message){
-        $('#messages').append($('<li>').text(message.from + ": " + message.message));
-      });
+      var messageHandlers = {
+        'chatMessage': function(message)  {
+            $('#messages').append($('<li>').text(message.from + ": " + message.message));
+          },
 
-      socket.on('userConnection', function() {
-        $('#messages').append($('<li>').text('*** A user connected ***'));
-      });
+         'userConnection': function() {
+            $('#messages').append($('<li>').text('*** A user connected ***'));
+          }
+      };
+
+      for (var msg in messageHandlers) {
+        if (messageHandlers.hasOwnProperty(msg))
+          socket.on(msg, messageHandlers[msg]);
+      };
+
     </script>
   </body>
 </html>
